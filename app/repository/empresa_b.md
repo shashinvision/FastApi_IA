@@ -1,8 +1,8 @@
-# Empresa metalurgica de calera
+# Empresa Salud de calidad IA
 
 ## Perfil Corporativo
 
-La empresa metalurgica de calera es una startup tecnológica fundada en 2015 en Medellín, Colombia. Su enfoque principal es el desarrollo de inteligencia artificial aplicada al sector salud.
+La Empresa salud de calidad IA es una startup tecnológica fundada en 2015 en Medellín, Colombia. Su enfoque principal es el desarrollo de inteligencia artificial aplicada al sector salud.
 
 ## Soluciones
 
