@@ -1,8 +1,8 @@
-# San Felipe Diacono
+# Papeles del sur SA
 
 ## Historia
 
-Colegio San Felipe Diacono fue fundada en 1998 en Santiago de Chile con el objetivo de modernizar el sector logístico nacional. A lo largo de los años, ha expandido sus operaciones a Perú, Argentina y Colombia.
+Empresa de papeles del sur fue fundada en 1998 en Santiago de Chile con el objetivo de modernizar el sector logístico nacional. A lo largo de los años, ha expandido sus operaciones a Perú, Argentina y Colombia.
 
 ## Servicios
 

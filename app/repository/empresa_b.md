@@ -1,8 +1,8 @@
-# La mision de calera de tango
+# Empresa metalurgica de calera
 
 ## Perfil Corporativo
 
-La mision de calera de tango es una startup tecnológica fundada en 2015 en Medellín, Colombia. Su enfoque principal es el desarrollo de inteligencia artificial aplicada al sector salud.
+La empresa metalurgica de calera es una startup tecnológica fundada en 2015 en Medellín, Colombia. Su enfoque principal es el desarrollo de inteligencia artificial aplicada al sector salud.
 
 ## Soluciones
 
