@@ -1,13 +1,14 @@
 # from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 from langchain.prompts import PromptTemplate
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 import glob as glob_module  # Renombramos para evitar confusión con el parámetro glob
+from langchain_ollama import OllamaLLM
+# from langchain_community.llms import Ollama
 
 import os
 import torch
@@ -18,7 +19,7 @@ class EmpresaService:
         # Use Apple Silicon acceleration if available
         self.device = "mps" if torch.backends.mps.is_available() else "cpu"
         # self.model_name = "tiiuae/falcon-rw-1b"
-        self.model_name = "google/flan-t5-base"
+        self.model_name = "gemma3:latest"
 
         self.embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
@@ -129,28 +130,10 @@ class EmpresaService:
         return documents
 
     def load_llm(self):
-        print("Loading tokenizer...")
-        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        print("Loading model...")
-
-        # model = AutoModelForCausalLM.from_pretrained(
-        model = AutoModelForSeq2SeqLM.from_pretrained(
-            self.model_name,
-            torch_dtype=torch.float16 if self.device == "mps" else torch.float32,
-            device_map="auto",
-            low_cpu_mem_usage=True,
+        print("Loading Ollama model")
+        return OllamaLLM(
+            model=self.model_name,
+            temperature=0.7,  # Adjust for more/less creative responses
+            top_p=0.9,
+            # timeout=60  # Optional timeout
         )
-        print("Model loaded. Creating pipeline...")
-
-        pipe = pipeline(
-            "text2text-generation",
-            model=model,
-            tokenizer=tokenizer,
-            max_new_tokens=128,
-            temperature=0.7,
-            top_k=50,
-            top_p=0.90,
-            repetition_penalty=1.3,
-        )
-
-        return HuggingFacePipeline(pipeline=pipe)
