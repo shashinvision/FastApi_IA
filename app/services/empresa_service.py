@@ -5,10 +5,10 @@ from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.chains import ConversationalRetrievalChain
-from langchain.memory import ConversationBufferMemory
 import glob as glob_module  # Renombramos para evitar confusión con el parámetro glob
 from langchain_ollama import OllamaLLM
-# from langchain_community.llms import Ollama
+from langchain.memory import ChatMessageHistory
+from langchain_core.runnables import RunnableWithMessageHistory
 
 import os
 import torch
@@ -43,10 +43,6 @@ class EmpresaService:
                 split_docs, self.embeddings, persist_directory=self.persist_dir
             )
 
-        memory = ConversationBufferMemory(
-            memory_key="chat_history", return_messages=True
-        )
-
         self.prompt = PromptTemplate(
             input_variables=["context", "question"],
             template=(
@@ -58,24 +54,34 @@ class EmpresaService:
             ),
         )
 
-        self.qa_chain = ConversationalRetrievalChain.from_llm(
+        # Create base chain without memory
+        base_qa_chain = ConversationalRetrievalChain.from_llm(
             llm=self.load_llm(),
             retriever=self.vector_store.as_retriever(),
-            memory=memory,
             return_source_documents=False,
             combine_docs_chain_kwargs={"prompt": self.prompt},
+            verbose=True,
+        )
+        # Store chat histories in a dictionary
+        self.chat_histories = {}
+
+        def get_session_history(session_id: str) -> ChatMessageHistory:
+            if session_id not in self.chat_histories:
+                self.chat_histories[session_id] = ChatMessageHistory()
+            return self.chat_histories[session_id]
+
+        # Wrap with RunnableWithMessageHistory
+        self.qa_chain = RunnableWithMessageHistory(
+            base_qa_chain,
+            get_session_history,
+            input_messages_key="question",
+            history_messages_key="chat_history",
         )
 
-    def ask(self, query: str) -> str:
-        # Obtén los documentos que el retriever está usando
-        docs = self.vector_store.similarity_search(query, k=3)
-        print(f"Documentos recuperados para '{query}':")
-        for i, doc in enumerate(docs):
-            print(
-                f"Doc {i}: {doc.metadata.get('empresa', 'Unknown')}: {doc.page_content[:100]}..."
-            )
-
-        response = self.qa_chain.invoke({"question": query})
+    def ask(self, query: str, session_id: str = "default") -> str:
+        response = self.qa_chain.invoke(
+            {"question": query}, config={"configurable": {"session_id": session_id}}
+        )
         return response.get("answer", "No se pudo generar una respuesta.")
 
     def add_metadata(self, doc, doc_type):
