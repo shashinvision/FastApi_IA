@@ -2,3 +2,9 @@ fastapi
 uvicorn
 sqlalchemy
 pydantic
+langchain
+langchain-community
+langchain-ollama
+langchain-huggingface
+langchain_core
+langchain_chroma
