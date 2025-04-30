@@ -19,7 +19,7 @@ class EmpresaService:
         # Use Apple Silicon acceleration if available
         self.device = "mps" if torch.backends.mps.is_available() else "cpu"
         # self.model_name = "tiiuae/falcon-rw-1b"
-        self.model_name = "gemma3:latest"
+        self.model_name = "tinyllama:latest"
 
         self.embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"

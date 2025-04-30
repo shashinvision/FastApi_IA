@@ -45,3 +45,16 @@ Este servicio proporciona capacidades de recuperación de información y respues
 - Considera optimizar el repositorio de documentos para mejorar el rendimiento.
 - Para preguntas más complejas, considera proporcionar más contexto en la pregunta.
 - Este es un proyecto en desarrollo y puede contener errores.
+
+## activa el entorno virtual
+
+```bash
+python3 -m venv .env
+. .env/bin/activate
+```
+
+## Si quiere correr en un puerto diferente al 8000
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8085 --reload
+```
